@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LoginFrame extends JFrame {
     private JLabel jLabelID=new JLabel("ID:");
@@ -23,7 +25,13 @@ public class LoginFrame extends JFrame {
     private void init(){
         screenW=dim.width;
         screenH=dim.height;
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+            }
+        });
         this.setBounds(screenW/2-frmW/2,screenH/2-frmH/2,frmW,frmH);
         cp=this.getContentPane();
         cp.setLayout(new GridLayout(3,2,3,3));
@@ -47,9 +55,10 @@ public class LoginFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if(jTextFieldID.getText().equals("h304")&&(new String(jPsField.getPassword()).equals("23323456"))){
 
+                    LoginFrame.this.setVisible(false);
                     MainFrame mainFrame=new MainFrame(LoginFrame.this);
                     mainFrame.setVisible(true);
-                    LoginFrame.this.setVisible(false);
+
                 }else {
                     JOptionPane.showMessageDialog(null,"ERROR");
                 }

@@ -19,8 +19,20 @@ public class MainFrame extends JFrame {
 
     private JMenuItem jMenuItemFExit=new JMenuItem("Exit");
     private JMenuItem jMenuItemGLoto=new JMenuItem("Loto");
+    private JMenuItem jMenuItemGFont=new JMenuItem("Font");
+
+    private JPanel jpanel1=new JPanel(new GridLayout(2,3,5,5));
+    private JLabel jlbFontSize=new JLabel("size");
+    private JLabel jlbFontFamily=new JLabel("family");
+    private JLabel jlbFontStyle=new JLabel("style");
+    private TextField jtfFamily=new TextField("Time New Roman");
+    private TextField jtfSize=new TextField("24");
+    private String[] options={"PLAIN","BOLD","ITALIC","BOLD+ITALIC"};
+    private JComboBox jcbFStyle=new JComboBox(options);
+
     private JDesktopPane jdp=new JDesktopPane();
     private JInternalFrame jInternalFrame=new JInternalFrame();
+
 
     private Container jtfCP;
     private JPanel jpn=new JPanel(new GridLayout(1,6,5,5));
@@ -32,6 +44,16 @@ public class MainFrame extends JFrame {
     private Random rnd=new Random(System.currentTimeMillis());
 
     private LoginFrame loginFrame;
+
+    private JInternalFrame jIFAddCategory=new JInternalFrame();
+    private Container jIFAddCategoryCp;
+    private JMenuBar jIFAddCategoryJmb=new JMenuBar();
+    private JMenu jmDate=new JMenu("Date");
+    private JMenuItem jmiDataLoad=new JMenuItem("Load");
+    private JMenuItem jmiDataNew=new JMenuItem("New");
+    private JMenuItem jmiDataClose=new JMenuItem("Close");
+    private JMenuItem jmiAddCategory=new JMenuItem("Category");
+    private JScrollPane jsp1=new JScrollPane();
 
 
 public MainFrame(LoginFrame login){
@@ -50,10 +72,19 @@ private void init(){
     jmb.add(jmA);
     jmF.add(jMenuItemFExit);
     jmG.add(jMenuItemGLoto);
+    jmS.add(jMenuItemGFont);
+
+    jpanel1.add(jlbFontSize);
+    jpanel1.add(jlbFontFamily);
+    jpanel1.add(jlbFontStyle);
+    jpanel1.add(jtfFamily);
+    jpanel1.add(jtfSize);
+    jpanel1.add(jcbFStyle);
+
     this.addWindowListener(new WindowAdapter() {
         @Override
-        public void windowClosing(WindowEvent e) {
-            loginFrame.setVisible(true);
+        public void windowClosing(WindowEvent windowEvent) {
+          super.windowClosing(windowEvent);
         }
     });
     jInternalFrame.setBounds(0,0,200,80);
@@ -73,6 +104,45 @@ private void init(){
             jInternalFrame.setVisible(true);
         }
     });
+    jMenuItemGFont.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int result=JOptionPane.showConfirmDialog(MainFrame.this,
+                    jpanel1,
+                    "Font setting",
+                    JOptionPane.OK_CANCEL_OPTION);
+            int fontStyle=0;
+            switch (jcbFStyle.getSelectedIndex()){
+                case 0:
+                    fontStyle=Font.PLAIN;
+                    break;
+                case 1:
+                    fontStyle=Font.BOLD;
+                    break;
+                case 2:
+                    fontStyle=Font.ITALIC;
+                    break;
+                case 3:
+                    fontStyle=Font.BOLD+Font.ITALIC;
+                    break;
+            }
+            if(result ==JOptionPane.OK_OPTION){
+                UIManager.put("Menu font",new Font(jtfFamily.getText(),fontStyle,Integer.parseInt(jtfSize.getText())));
+            }
+        }
+    });
+    jmiAddCategory.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            jIFAddCategory.setVisible(true);
+            jIFAddCategoryCp=jIFAddCategory.getContentPane();
+            jIFAddCategoryCp.setLayout(new BorderLayout(5,5));
+            jIFAddCategoryCp.add(jsp1,BorderLayout.CENTER);
+            jIFAddCategory.setJMenuBar(jIFAddCategoryJmb);
+            jIFAddCategory.setBounds(0,0,500,500);
+//            jIFAddCategoryJmb
+        }
+    });
     jbtnRegen.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -80,7 +150,14 @@ private void init(){
         }
     });
     jMenuItemFExit.setAccelerator(KeyStroke.getKeyStroke('X',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    this.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            loginFrame.setVisible(true);
+        }
+    });
 }
+
 private void lotoGrnerate(){
     int i=0;
     while (i<6){
@@ -89,8 +166,10 @@ private void lotoGrnerate(){
 
     }
 }
+
 public void reset(){
 
 }
+
 
 }
