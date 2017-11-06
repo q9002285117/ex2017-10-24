@@ -23,6 +23,7 @@ public class MainFrame extends JFrame {
     private JMenuItem jMenuItemFExit = new JMenuItem("Exit");
     private JMenuItem jMenuItemGLoto = new JMenuItem("Loto");
     private JMenuItem jMenuItemGFont = new JMenuItem("Font");
+    private JMenuItem jMenuItemGKeyboard=new JMenuItem("Keyboard");
 
     private JPanel jpanel1 = new JPanel(new GridLayout(2, 3, 5, 5));
     private JLabel jlbFontSize = new JLabel("size");
@@ -59,6 +60,14 @@ public class MainFrame extends JFrame {
     private JScrollPane jsp1 = new JScrollPane();
     private JFileChooser jfc=new JFileChooser();
 
+    private JInternalFrame jifKeyboard=new JInternalFrame();
+    private Container jifKeyboardCp;
+    private JPanel jplKeyboard=new JPanel(new GridLayout(4,3,3,3));
+    private JTextField jtfKeyboard=new JTextField();
+    private JButton jbtn[]=new JButton[12];
+    private Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+    private int width=300,height=300,screenWidth=dim.width,screenHeight=dim.height;
+    private Container cp;
 
     public MainFrame(LoginFrame log) {
         loginFrame = log;
@@ -88,6 +97,7 @@ public class MainFrame extends JFrame {
         jmF.add(jMenuItemFExit);
         jmG.add(jMenuItemGLoto);
         jmS.add(jMenuItemGFont);
+        jmG.add(jMenuItemGKeyboard);
 
         jpanel1.add(jlbFontSize);
         jpanel1.add(jlbFontFamily);
@@ -127,6 +137,27 @@ public class MainFrame extends JFrame {
                 lotoGenerate();
             }
         });
+        jMenuItemGKeyboard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                jdp.add(jifKeyboard);
+                jifKeyboard.setVisible(true);
+                keyboard();
+
+
+            }
+        });
+        jifKeyboard.setBounds(20,20,300,300);
+        jifKeyboardCp=jifKeyboard.getContentPane();
+        jifKeyboardCp.setLayout(new BorderLayout(5,5));
+        jifKeyboardCp.add(jtfKeyboard,BorderLayout.NORTH);
+        jifKeyboardCp.add(jplKeyboard,BorderLayout.CENTER);
+        jtfKeyboard.setEditable(false);
+
+
+
+
         jMenuItemGFont.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -201,6 +232,7 @@ public class MainFrame extends JFrame {
         });
         jMenuItemFExit.setAccelerator(KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jMenuItemGLoto.setAccelerator(KeyStroke.getKeyStroke('L',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        jMenuItemGKeyboard.setAccelerator(KeyStroke.getKeyStroke('K',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -227,5 +259,49 @@ public class MainFrame extends JFrame {
                 i++;
             }
         }
+    }
+    private void keyboard(){
+        for(int i=0;i<10;i++){
+            jbtn[i]=new JButton();
+            jplKeyboard.add(jbtn[i]);
+            jbtn[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JButton jb=(JButton)e.getSource();
+                    jtfKeyboard.setText(jtfKeyboard.getText()+jb.getText());
+                }
+            });
+        }
+        for(int i=0;i<10;i++){
+            jbtn[i].setText(String.valueOf(rnd.nextInt(10)));
+            boolean repeat=false;
+            for(int j=0;j<i;j++){
+                if(jbtn[j].getText().equals(jbtn[i].getText())){
+                    repeat=true;
+                    break;
+                }
+            }
+            if(repeat==true){
+                i--;
+                continue;
+            }
+        }
+        jbtn[10]=new JButton("Exit");
+        jbtn[11]=new JButton("Clear");
+        jplKeyboard.add(jbtn[10]);
+        jplKeyboard.add(jbtn[11]);
+        jbtn[10].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainFrame.this.setVisible(false);
+                loginFrame.setVisible(true);
+            }
+        });
+        jbtn[11].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jtfKeyboard.setText("");
+            }
+        });
     }
 }
