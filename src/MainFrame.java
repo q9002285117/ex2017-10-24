@@ -59,14 +59,13 @@ public class MainFrame extends JFrame {
     private JMenuItem jmiAddCategory = new JMenuItem("Category");
     private JScrollPane jsp1 = new JScrollPane();
     private JFileChooser jfc=new JFileChooser();
+    private JTextArea jta=new JTextArea();
 
     private JInternalFrame jifKeyboard=new JInternalFrame();
     private Container jifKeyboardCp;
     private JPanel jplKeyboard=new JPanel(new GridLayout(4,3,3,3));
     private JTextField jtfKeyboard=new JTextField();
     private JButton jbtn[]=new JButton[12];
-    private Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
-    private int width=300,height=300,screenWidth=dim.width,screenHeight=dim.height;
     private Container cp;
 
     public MainFrame(LoginFrame log) {
@@ -89,6 +88,7 @@ public class MainFrame extends JFrame {
                 loginFrame.reset();
             }
         });
+//        ---------------------------------------------------------------------------------
         jmb.add(jmF);
         jmb.add(jmS);
         jmb.add(jmG);
@@ -98,6 +98,7 @@ public class MainFrame extends JFrame {
         jmG.add(jMenuItemGLoto);
         jmS.add(jMenuItemGFont);
         jmG.add(jMenuItemGKeyboard);
+        jmF.add(jmiAddCategory);
 
         jpanel1.add(jlbFontSize);
         jpanel1.add(jlbFontFamily);
@@ -105,7 +106,50 @@ public class MainFrame extends JFrame {
         jpanel1.add(jtfFamily);
         jpanel1.add(jtfSize);
         jpanel1.add(jcbFStyle);
+        //-----------------------------------------------------------------------------------------------
+        jmiAddCategory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jdp.add(jIFAddCategory);
+                jIFAddCategory.setVisible(true);
+                jIFAddCategory.setBounds(0, 0, 400, 400);
+                jIFAddCategoryCp = jIFAddCategory.getContentPane();
+                jIFAddCategoryCp.setLayout(new BorderLayout(5, 5));
+                jIFAddCategoryCp.add(jsp1, BorderLayout.CENTER);
+                jIFAddCategory.setJMenuBar(jIFAddCategoryJmb);
 
+                jIFAddCategoryJmb.add(jmData);
+                jmData.add(jmiDataLoad);
+                jmData.add(jmiDataNew);
+                jmData.add(jmiDataClose);
+            }
+        });
+        jmiDataLoad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jfc.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+                    try {
+                        File infile = jfc.getSelectedFile();
+                        BufferedReader br=new BufferedReader(new FileReader(infile));
+                        System.out.println("FileName:" + infile.getName());
+                        String str = " ";
+                        while ((str=br.readLine())!=null){
+                            jta.append(str+"\n");
+                        }
+                        System.out.println("Read file finished!");
+                    }catch(Exception jbe){
+                        JOptionPane.showMessageDialog(null,"open file error"+jbe.toString());
+                    }
+                }
+            }
+        });
+        jmiDataClose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jIFAddCategory.dispose();
+            }
+        });
+//-------------------------樂透亂數------------------------------------------
         for(int i=0;i<6;i++){
             jlb[i]=new JLabel();
             jlb[i].setOpaque(true);
@@ -121,14 +165,6 @@ public class MainFrame extends JFrame {
         jtfCP.add(jpn1, BorderLayout.SOUTH);
         jpn1.add(jbtnClose);
         jpn1.add(jbtnRegen);
-        jMenuItemFExit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loginFrame.setVisible(true);
-                dispose();
-                loginFrame.reset();
-            }
-        });
         jMenuItemGLoto.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -137,6 +173,29 @@ public class MainFrame extends JFrame {
                 lotoGenerate();
             }
         });
+        jbtnClose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jInternalFrame.dispose();
+            }
+        });
+        jbtnRegen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lotoGenerate();
+            }
+        });
+//        ----------------------離開----------------------------------------------------------
+
+        jMenuItemFExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginFrame.setVisible(true);
+                dispose();
+                loginFrame.reset();
+            }
+        });
+//        -----------------------亂數鍵盤----------------------------------------------------------
         jMenuItemGKeyboard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,9 +213,7 @@ public class MainFrame extends JFrame {
         jifKeyboardCp.add(jtfKeyboard,BorderLayout.NORTH);
         jifKeyboardCp.add(jplKeyboard,BorderLayout.CENTER);
         jtfKeyboard.setEditable(false);
-
-
-
+//        ---------------------字體修改------------------------------------------------------------
 
         jMenuItemGFont.addActionListener(new ActionListener() {
             @Override
@@ -186,50 +243,7 @@ public class MainFrame extends JFrame {
                 }
             }
         });
-        jbtnClose.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jInternalFrame.dispose();
-            }
-        });
-        jbtnRegen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                lotoGenerate();
-            }
-        });
-        jmiAddCategory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jIFAddCategory.setVisible(true);
-                jIFAddCategoryCp = jIFAddCategory.getContentPane();
-                jIFAddCategoryCp.setLayout(new BorderLayout(5, 5));
-                jIFAddCategoryCp.add(jsp1, BorderLayout.CENTER);
-                jIFAddCategory.setJMenuBar(jIFAddCategoryJmb);
-                jIFAddCategory.setBounds(0, 0, 500, 500);
-                jIFAddCategoryJmb.add(jmData);
-                jmData.add(jmiDataLoad);
-                jmData.add(jmiDataNew);
-                jmData.add(jmiDataClose);
-                jdp.add(jIFAddCategory);
-            }
-        });
-        jmiDataLoad.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            if(jfc.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
-//                try {
-                    File infile = jfc.getSelectedFile();
-//                    BufferedReader br=new BufferedReader(new FileReader(infile));
-                    System.out.println("FileName:" + infile.getName());
-                    String str = " ";
-//                    while (str==br.readLine()!=null){
-//                        jta.append(str+"\n");
-//                    }
-                }
-            }
-//            }
-        });
+
         jMenuItemFExit.setAccelerator(KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jMenuItemGLoto.setAccelerator(KeyStroke.getKeyStroke('L',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         jMenuItemGKeyboard.setAccelerator(KeyStroke.getKeyStroke('K',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
